@@ -1,35 +1,127 @@
-# v0-music-app-ui
+# SoundWave - Music Upload Platform
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+Msanii wanaweza kujisajili, kuingia, na kupakia nyimzo zao kwenye platform hii.
 
-## Built with v0
+## 🚀 Kuanza Haraka
 
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
+### Installation
 
-[Continue working on v0 →](https://v0.app/chat/projects/prj_wS7XVFjdu34kFE4h2YGOtjjbIf3Z)
+```bash
+npm install
+# or
+pnpm install
+```
 
-## Getting Started
+### Environment Variables
 
-First, run the development server:
+Ungeza faili `.env.local`:
+
+```bash
+JWT_SECRET=your-secret-key
+NODE_ENV=development
+```
+
+### Kuendesha Development Server
 
 ```bash
 npm run dev
 # or
-yarn dev
-# or
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Bukeni [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📋 Jinsi ya Kutimizia
 
-## Learn More
+### 1. Jisajili (Sign Up)
+Msanii huenda kwa `/auth/register` na kuwajaza:
+- Jina Lako Kamili
+- Barua Pepe
+- Jina la Msanii
+- Nenosiri
 
-To learn more, take a look at the following resources:
+### 2. Ingia (Login)
+Msanii huenda kwa `/auth/login` na kuingia kwa email na nenosiri
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
+### 3. Dashboard
+Katika `/dashboard`, msanii anaweza:
+- ✅ Kupakia nyimzo mpya (MP3, WAV, FLAC, OGG)
+- ✅ Kuona orodha ya nyimzo zote
+- ✅ Kuondoa nyimzo
+- ✅ Kusikiliza nyimzo
 
-<a href="https://v0.app/chat/api/kiro/clone/Chegemgwani26/v0-music-app-ui" alt="Open in Kiro"><img src="https://pdgvvgmkdvyeydso.public.blob.vercel-storage.com/open%20in%20kiro.svg?sanitize=true" /></a>
+## 🔗 API Endpoints
+
+### Authentication
+- `POST /api/auth/register` - Jisajili
+- `POST /api/auth/login` - Ingia
+
+### Tracks
+- `GET /api/tracks` - Kupata nyimzo zote za msanii
+- `POST /api/upload` - Kupakia nyimzo mpya
+- `DELETE /api/tracks/:id` - Kuondoa nyimzo
+
+## 📁 Muundo wa Project
+
+```
+app/
+├── auth/
+│   ├── register/page.tsx    # Ukurasa wa jisajili
+│   └── login/page.tsx       # Ukurasa wa kuingia
+├── dashboard/
+│   └── page.tsx             # Dashboard ya msanii
+├── api/
+│   ├── auth/
+│   │   ├── register/route.ts
+│   │   └── login/route.ts
+│   ├── upload/route.ts      # Kupakia faili
+│   └── tracks/route.ts      # Kusimamia nyimzo
+└── page.tsx                 # Ukurasa wa nyumbani
+```
+
+## 🛠️ Technology Stack
+
+- **Next.js 16** - React Framework
+- **TypeScript** - Type Safety
+- **Tailwind CSS** - Styling
+- **bcryptjs** - Password Hashing
+- **jsonwebtoken** - JWT Authentication
+- **Lucide React** - Icons
+
+## 📝 Variables za Environment
+
+```env
+# Lazima kuongezwa kwenye .env.local
+JWT_SECRET=your-secret-key-change-this
+NODE_ENV=development
+NEXT_PUBLIC_API_URL=http://localhost:3000
+```
+
+## 🔐 Security Notes
+
+- Badilisha `JWT_SECRET` na key thabiti katika production
+- Nyimzo zote zinalindwa kwa JWT tokens
+- Passwords zinahashwa kwa bcryptjs
+- File uploads zinalindwa kwa validation
+
+## 📱 Responsive Design
+
+Platform imetengenezwa kuwa responsive kwenye:
+- Mobile devices
+- Tablets
+- Desktop
+
+## 🚀 Kutengeneza kwa Production
+
+```bash
+npm run build
+npm run start
+```
+
+## 📞 Support
+
+Kama una maswali, tafadhali wasiliana na timu ya development.
+
+## 📄 License
+
+Milele - 2026
