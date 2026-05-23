@@ -72,6 +72,46 @@ const tracks: Track[] = [
     albumCover: "/album-5.jpg",
     plays: "521,987,456",
     duration: "3:55"
+  },
+  {
+    id: 6,
+    title: "Neon Paradise",
+    album: "Cyber Dreams",
+    albumCover: "/album-6.jpg",
+    plays: "445,678,923",
+    duration: "3:51"
+  },
+  {
+    id: 7,
+    title: "Echoes of Tomorrow",
+    album: "Future Vibes",
+    albumCover: "/album-7.jpg",
+    plays: "398,765,432",
+    duration: "4:33"
+  },
+  {
+    id: 8,
+    title: "Crystalline",
+    album: "Luminous Heart",
+    albumCover: "/album-8.jpg",
+    plays: "367,234,789",
+    duration: "3:19"
+  },
+  {
+    id: 9,
+    title: "Midnight Run",
+    album: "Nocturnal Tales",
+    albumCover: "/album-9.jpg",
+    plays: "312,456,678",
+    duration: "4:08"
+  },
+  {
+    id: 10,
+    title: "Sonic Waves",
+    album: "Frequency",
+    albumCover: "/album-10.jpg",
+    plays: "289,123,456",
+    duration: "3:36"
   }
 ]
 
@@ -157,7 +197,7 @@ export function ArtistProfile() {
 
             {/* Premium Button */}
             <Button 
-              className="mt-4 w-full bg-gradient-to-r from-primary to-accent text-primary-foreground font-semibold py-5 rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-300"
+              className="mt-4 w-full bg-gradient-to-r from-primary to-accent text-primary-foreground font-semibold py-5 rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 transition[...]
             >
               <Crown className="w-5 h-5 mr-2" />
               Upgrade to Premium Artist
