@@ -1,63 +1,61 @@
-import { NextRequest, NextResponse } from 'next/server'
-import jwt from 'jsonwebtoken'
-import bcryptjs from 'bcryptjs'
+import { NextRequest, NextResponse } from 'next/server';
+import connectDB from '@/lib/mongodb';
+import User from '@/lib/models/User';
+import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-this'
-
-// Mock database - replace with MongoDB in production
-const artists: any[] = []
-
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await req.json()
+    await connectDB();
+    const { email, password } = await request.json();
 
     // Validate input
     if (!email || !password) {
       return NextResponse.json(
-        { error: 'Tafadhali jaza barua pepe na nenosiri' },
+        { message: 'Email and password are required' },
         { status: 400 }
-      )
+      );
     }
 
-    // Find artist
-    const artist = artists.find(a => a.email === email)
-    if (!artist) {
+    // Find user
+    const user = await User.findOne({ email });
+    if (!user) {
       return NextResponse.json(
-        { error: 'Barua pepe au nenosiri si sahihi' },
+        { message: 'Invalid email or password' },
         { status: 401 }
-      )
+      );
     }
 
     // Check password
-    const isPasswordValid = await bcryptjs.compare(password, artist.password)
+    const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
       return NextResponse.json(
-        { error: 'Barua pepe au nenosiri si sahihi' },
+        { message: 'Invalid email or password' },
         { status: 401 }
-      )
+      );
     }
 
-    // Create token
+    // Generate JWT token
     const token = jwt.sign(
-      { artistId: artist.id, email: artist.email },
-      JWT_SECRET,
-      { expiresIn: '30d' }
-    )
+      { userId: user._id, email: user.email, isArtist: user.isArtist },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '7d' }
+    );
 
-    return NextResponse.json({
-      token,
-      artist: {
-        id: artist.id,
-        name: artist.name,
-        email: artist.email,
-        artistName: artist.artistName
-      }
-    })
-  } catch (error) {
-    console.error('Login error:', error)
     return NextResponse.json(
-      { error: 'Kuingia kumeshindwa' },
+      {
+        message: 'Login successful',
+        token,
+        isArtist: user.isArtist,
+        userId: user._id,
+        username: user.username,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error('Login error:', error);
+    return NextResponse.json(
+      { message: 'Internal server error' },
       { status: 500 }
-    )
+    );
   }
 }

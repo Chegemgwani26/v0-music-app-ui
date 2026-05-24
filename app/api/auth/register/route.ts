@@ -1,70 +1,65 @@
-import { NextRequest, NextResponse } from 'next/server'
-import jwt from 'jsonwebtoken'
-import bcryptjs from 'bcryptjs'
+import { NextRequest, NextResponse } from 'next/server';
+import connectDB from '@/lib/mongodb';
+import User from '@/lib/models/User';
+import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-this'
-
-// Mock database - replace with MongoDB in production
-const artists: any[] = []
-
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const { name, email, artistName, password } = await req.json()
+    await connectDB();
+    const { username, email, password, isArtist } = await request.json();
 
     // Validate input
-    if (!name || !email || !artistName || !password) {
+    if (!username || !email || !password) {
       return NextResponse.json(
-        { error: 'Tafadhali jaza sehemu zote' },
+        { message: 'Username, email, and password are required' },
         { status: 400 }
-      )
+      );
     }
 
-    // Check if artist exists
-    const existingArtist = artists.find(a => a.email === email)
-    if (existingArtist) {
+    // Check if user already exists
+    const existingUser = await User.findOne({
+      $or: [{ email }, { username }],
+    });
+
+    if (existingUser) {
       return NextResponse.json(
-        { error: 'Email hii tayari imetumika' },
-        { status: 400 }
-      )
+        { message: 'Email or username already exists' },
+        { status: 409 }
+      );
     }
 
-    // Hash password
-    const salt = await bcryptjs.genSalt(10)
-    const hashedPassword = await bcryptjs.hash(password, salt)
-
-    // Create artist
-    const artist = {
-      id: Date.now().toString(),
-      name,
+    // Create new user
+    const newUser = new User({
+      username,
       email,
-      artistName,
-      password: hashedPassword,
-      createdAt: new Date()
-    }
+      password,
+      isArtist: isArtist || false,
+    });
 
-    artists.push(artist)
+    await newUser.save();
 
-    // Create token
+    // Generate JWT token
     const token = jwt.sign(
-      { artistId: artist.id, email: artist.email },
-      JWT_SECRET,
-      { expiresIn: '30d' }
-    )
+      { userId: newUser._id, email: newUser.email, isArtist: newUser.isArtist },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '7d' }
+    );
 
-    return NextResponse.json({
-      token,
-      artist: {
-        id: artist.id,
-        name: artist.name,
-        email: artist.email,
-        artistName: artist.artistName
-      }
-    })
-  } catch (error) {
-    console.error('Registration error:', error)
     return NextResponse.json(
-      { error: 'Usajili umeshindwa' },
+      {
+        message: 'Account created successfully',
+        token,
+        isArtist: newUser.isArtist,
+        userId: newUser._id,
+        username: newUser.username,
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error('Registration error:', error);
+    return NextResponse.json(
+      { message: 'Internal server error' },
       { status: 500 }
-    )
+    );
   }
 }
